@@ -1,0 +1,51 @@
+# .vmodel.yml : project context for the V-Model skill set
+# Single source of truth. Every V-Model skill reads this file first.
+# Copy this to your project root as ".vmodel.yml" and fill in the values.
+
+project: "<Project name>"
+
+# Coarse lifecycle phase. Skills adapt their depth and focus to this value.
+# One of: Inception | Build | Run
+lifecycle-phase: Inception
+
+# Technology stack. Skills use these facts instead of assuming a stack.
+stack:
+  language: "<e.g. TypeScript, Java, Python>"
+  frontend: "<e.g. React, none>"
+  backend: "<e.g. Express, Spring Boot>"
+  database: "<e.g. PostgreSQL, none>"
+  orm: "<e.g. Prisma, none>"
+  validation: "<e.g. Zod, Bean Validation, none>"
+  api-style: "<e.g. OpenAPI/REST, GraphQL>"
+  auth-model: "<e.g. OIDC, session, none>"
+
+# Command hooks. Skills call these instead of any built-in vendor skill.
+# Leave a value empty if the project does not have that step yet.
+hooks:
+  test-command: "<e.g. npm test, pytest, mvn verify>"
+  e2e-test-command: "<e.g. npx playwright test>"
+  security-scan-command: "<e.g. npm audit, trivy fs ., snyk test>"
+  build-command: "<e.g. npm run build>"
+  deploy-command: "<e.g. your deploy script or CI pipeline>"
+
+# Conventions used across all artifacts.
+conventions:
+  docs-path: docs/arc42/
+  id-prefixes:
+    user-story: US-
+    functional-requirement: FR-
+    non-functional-requirement: NFR-
+    unit-test: UT-
+    functional-test: FT-
+    acceptance-test: AT-
+    smoke-test: ST-
+    risk: R-
+    decision: ADR-
+    persona: P
+
+# House rules applied to every generated deliverable.
+house-rules:
+  no-em-dash: true          # use commas, never em-dashes
+  german-umlauts: true      # write ae oe ue as the umlauts a o u with two dots
+  swiss-german: true        # ss, never the German sharp s
+  english-for-non-native: true
