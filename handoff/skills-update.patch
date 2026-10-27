@@ -1,0 +1,617 @@
+diff --git a/plugins/inacta-vmodel/.claude-plugin/plugin.json b/plugins/inacta-vmodel/.claude-plugin/plugin.json
+index feb98bb..8cb5c1a 100644
+--- a/plugins/inacta-vmodel/.claude-plugin/plugin.json
++++ b/plugins/inacta-vmodel/.claude-plugin/plugin.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "inacta-vmodel",
+-  "version": "0.2.0",
++  "version": "0.3.0",
+   "description": "Phase-aware V-Model engineering method. Eleven skills spanning the Inception, Build, and Run lifecycle: project-context setup, personas, requirements, arc42 architecture, design by contract, test strategy, risk audit, docs viewer, deployment readiness, and an orchestrating workflow. Stack-neutral and runtime-neutral, every skill reads a per-project context file (.vmodel.yml plus docs/project-context.md). This plugin is a thin Claude packaging of the canonical skills in the Inacta skills library.",
+   "author": {
+     "name": "Christian Di Giorgio"
+diff --git a/plugins/inacta-vmodel/_shared/project-context.template.md b/plugins/inacta-vmodel/_shared/project-context.template.md
+index d787572..7883fb9 100644
+--- a/plugins/inacta-vmodel/_shared/project-context.template.md
++++ b/plugins/inacta-vmodel/_shared/project-context.template.md
+@@ -26,6 +26,11 @@ Current phase: **Inception** (change to Build or Run as the project moves on)
+ - No em-dashes in any deliverable, use commas instead.
+ - German text uses the umlauts a o u with two dots, and ss instead of the sharp s.
+ - English text is optimised for non-native readers: short sentences, no idioms.
++- User interface work: no layout and no widgets before the object-action matrix exists in
++  `docs/ui/` for the objects touched (skill `interaction-model`). UI names come from the
++  glossary. Every empty matrix cell has a reason. Undo beats confirm. Every action has a
++  visible signifier. Controls live in a layer above the content. Motion follows the input
++  and can be interrupted.
+ 
+ ## Phase history
+ 
+diff --git a/plugins/inacta-vmodel/skills/arc42-documentation/SKILL.md b/plugins/inacta-vmodel/skills/arc42-documentation/SKILL.md
+index ab28d31..4241ea0 100644
+--- a/plugins/inacta-vmodel/skills/arc42-documentation/SKILL.md
++++ b/plugins/inacta-vmodel/skills/arc42-documentation/SKILL.md
+@@ -50,6 +50,7 @@ Arc42 defines exactly **12 sections**. Never create a Section 13 or beyond. If a
+ | Performance characteristics | Section 10 (Quality Requirements) | Performance is a quality attribute |
+ | Monitoring / observability | Section 7 (Deployment) or Section 8 (Cross-cutting) | Infrastructure concern or cross-cutting pattern |
+ | Security architecture | Section 8 (Cross-cutting Concepts) | Security is a cross-cutting concern |
++| User interface concept (interaction model) | Section 8 (Cross-cutting Concepts) | One concept for all screens. Summarize the concept inventory, object map and object-action matrix from `interaction-model` (`docs/ui/`), link the full sheets, do not copy them |
+ | Data model / ERD | Section 5 (Building Block View) | Data model is part of the system's structure |
+ | Migration strategy | Section 9 (Architecture Decisions) | Migrations are architectural choices |
+ | Coding conventions | Section 2 (Architecture Constraints) | Conventions are constraints on development |
+diff --git a/plugins/inacta-vmodel/skills/test-strategy/SKILL.md b/plugins/inacta-vmodel/skills/test-strategy/SKILL.md
+index 7327ece..5ad5c46 100644
+--- a/plugins/inacta-vmodel/skills/test-strategy/SKILL.md
++++ b/plugins/inacta-vmodel/skills/test-strategy/SKILL.md
+@@ -45,6 +45,7 @@ Generate structured, traceable test strategies that close the right side of the
+ | `arc42-design-by-contract` | **Primary input.** DbC contracts in Section 5.4 are the source for unit/module test cases. `require` clauses become test inputs, `ensure` clauses become assertions, `invariant` clauses become property checks. |
+ | `persona-analysis` | Persona needs (P1-N1 format) from Section 01 feed into acceptance test scenarios. Each Critical/High persona need should have at least one acceptance test. |
+ | `arc42-documentation` | Quality scenarios from Section 10 map to system-level test cases. Functional decomposition provides capability groupings for organizing test suites. |
++| `interaction-model` | Each operational principle of a concept ("after you do X, Y holds") becomes one acceptance test (AT-). Each undo path in the signifier and reversibility table becomes one functional test (FT-). |
+ | `arc42-risk-audit` | Risk entries (R-xxx) from Section 11 identify areas needing negative/failure test cases. High-severity risks warrant dedicated regression tests. |
+ 
+ **Typical workflow**: Write requirements → Generate DbC specs → **Generate test strategy** → Execute tests (the project's configured test runner).
+@@ -91,6 +92,7 @@ Read these sources in order. Each source type yields a different category of tes
+ | User stories / persona needs | `docs/arc42/01-introduction-and-goals.md`, §1.4 | Acceptance tests (AT-) |
+ | Quality scenarios | `docs/arc42/10-quality-requirements.md` | Cross-cutting quality tests (FT-) |
+ | Risk entries | `docs/arc42/11-risks-and-technical-debt.md` | Negative/failure tests (FT-) |
++| Operational principles, undo paths | `docs/ui/` (from `interaction-model`) | Acceptance tests (AT-), reversibility tests (FT-) |
+ 
+ ### Source Inventory Template
+ 
+diff --git a/plugins/inacta-vmodel/skills/vmodel-setup/assets/project-context.template.md b/plugins/inacta-vmodel/skills/vmodel-setup/assets/project-context.template.md
+index d787572..7883fb9 100644
+--- a/plugins/inacta-vmodel/skills/vmodel-setup/assets/project-context.template.md
++++ b/plugins/inacta-vmodel/skills/vmodel-setup/assets/project-context.template.md
+@@ -26,6 +26,11 @@ Current phase: **Inception** (change to Build or Run as the project moves on)
+ - No em-dashes in any deliverable, use commas instead.
+ - German text uses the umlauts a o u with two dots, and ss instead of the sharp s.
+ - English text is optimised for non-native readers: short sentences, no idioms.
++- User interface work: no layout and no widgets before the object-action matrix exists in
++  `docs/ui/` for the objects touched (skill `interaction-model`). UI names come from the
++  glossary. Every empty matrix cell has a reason. Undo beats confirm. Every action has a
++  visible signifier. Controls live in a layer above the content. Motion follows the input
++  and can be interrupted.
+ 
+ ## Phase history
+ 
+diff --git a/plugins/inacta-vmodel/skills/vmodel-workflow/SKILL.md b/plugins/inacta-vmodel/skills/vmodel-workflow/SKILL.md
+index 29120af..252985d 100644
+--- a/plugins/inacta-vmodel/skills/vmodel-workflow/SKILL.md
++++ b/plugins/inacta-vmodel/skills/vmodel-workflow/SKILL.md
+@@ -125,12 +125,16 @@ Implementation ............ Code .....................
+ 3. Elicit user stories with acceptance criteria (US-XX.X format)
+ 4. Write functional requirements (FR-XX.X) and non-functional requirements (NFR-XX.X)
+ 5. Produce a traceability matrix linking stories to requirements
++6. If the change touches the user interface: run `interaction-model` (Build) for the
++   objects it touches. Output: concept inventory, object map and object-action matrix in
++   `docs/ui/`. No layout work before the matrix exists for those objects.
+ 
+ **Exit Criteria / Outputs**:
+ - User stories with acceptance criteria documented
+ - Functional and non-functional requirements in FR-XX.X / NFR-XX.X format
+ - Traceability matrix (stories to requirements)
+ - Updated requirements companion document in the docs path
++- For UI changes: the `interaction-model` artifacts in `docs/ui/`, updated
+ 
+ ---
+ 
+@@ -406,7 +410,12 @@ always in play.
+ When skipping a phase, document the justification briefly. Examples:
+ 
+ - "Phase 1 skipped: bug fix with clear root cause, no new requirements"
+-- "Phase 3 skipped: user interface only change, no behavioural contract modification"
++- "Phase 3 skipped: user interface only change, no behavioural contract modification,
++  interaction-model matrix updated in docs/ui/"
++
++A user interface change is never a reason to skip the interaction model. If Phase 3 is
++skipped for a UI-only change, run `interaction-model` Audit on the changed screens instead,
++and add its operational principles and undo rules to Phase 4.
+ - "Phase 7 skipped: standard feature with no security or data integrity implications"
+ 
+ ---
+@@ -470,6 +479,7 @@ Minimal flow for urgent fixes:
+ | 6. Test Execution | project hooks (`test-command`, `e2e-test-command`) | Test results, end-to-end verification |
+ | 7. Risk Audit | `arc42-risk-audit` | Risk entries (R-00x), mitigation plans, Section 11 updates |
+ | 8. Deployment Readiness | `deployment-readiness` | Go/no-go report, Definition of Done verification |
++| 1b. Interaction Model (any UI change) | `interaction-model` (skill library) | Concept inventory, object map, object-action matrix, posture, layers, signifiers in `docs/ui/` |
+ | Brand (any user interface or document) | `inacta-brand` | Inacta palette, typography, logo for consistent styling |
+ 
+ ---
+diff --git a/skills/clear-by-design/SKILL.md b/skills/clear-by-design/SKILL.md
+index ddde2ef..5c47300 100644
+--- a/skills/clear-by-design/SKILL.md
++++ b/skills/clear-by-design/SKILL.md
+@@ -11,7 +11,8 @@ description: >-
+   deck", "polish this report". Also use when someone has a document reviewed for impact.
+   Boundary: rates clarity, cognitive load and information design, not the substance. For
+   substance and attack surface red-team-review, for the buyer view tech-executive-review, for
+-  overspecificity weakest-claim-check, for the mechanical final check send-prep.
++  overspecificity weakest-claim-check, for the mechanical final check send-prep, for software
++  user interfaces interaction-model.
+ ---
+ 
+ # Clear by Design
+@@ -38,6 +39,8 @@ it makes the important path the easy path.
+ - `red-team-review` and `tech-executive-review` challenge the substance and the buying
+   judgement.
+ - `send-prep` is the mechanical final check before sending.
++- `interaction-model` designs software interfaces. This skill designs documents and decks,
++  including the document that presents a UI concept.
+ 
+ Sequence: the substance stands (reviews), then `clear-by-design` for impact and reading
+ pleasure, then `send-prep` as the last pass. This skill does not argue the facts again and
+diff --git a/skills/inacta-proposal-writing/SKILL.md b/skills/inacta-proposal-writing/SKILL.md
+index 36a2825..38175b7 100644
+--- a/skills/inacta-proposal-writing/SKILL.md
++++ b/skills/inacta-proposal-writing/SKILL.md
+@@ -39,6 +39,7 @@ with the point. The client's world comes first. Numbers beat adjectives.
+ engagement-setup   (folder plus AGENTS.md, work type "Proposal / pitch")
+   -> shipley-proposal   (win strategy, win themes, compliance matrix, storyboard)
+   -> solution-architecture-lite   (only if the offer designs a software system)
++  -> interaction-model   (only if the offer designs a user interface)
+   -> inacta-proposal-writing   (this skill: narrative, structure, action titles, business case)
+   -> inacta-proposal-deck (house look) or docx (Word), plus human-writing (voice)
+   -> tech-executive-review (buyer view), then red-team-review
+@@ -88,6 +89,13 @@ Do not flood the main context. Delegate multi-file reading to a sub-agent if the
+   trade-offs. Write the solution approach section from them. Do not design here, and do not
+   repeat a capacity figure without its assumption. If they are missing and the offer really
+   designs a system, run `solution-architecture-lite` first.
++- **Interaction model artifacts** in `reference/` if the offer designs a user interface:
++  the L1 to L4 sheets from `interaction-model`. Write the user side of the solution section
++  from them: the objects the users handle, in the client's words, and one operational
++  principle per concept as a short "after you do X, Y holds" story. Never show the matrix
++  or the worksheets to the client. If an audit of the current system exists, its top
++  findings can carry the complication. If they are missing and the offer designs a UI, run
++  `interaction-model` first.
+ - **The RFP and client input** in `brief/` if present. Input, never edit.
+ - **Any house structure, boilerplate, or template** the mandate points to. The
+   client-facing structure and any standing company facts are read per mandate, this
+diff --git a/skills/method-selector/SKILL.md b/skills/method-selector/SKILL.md
+index 2725628..8c1e2ca 100644
+--- a/skills/method-selector/SKILL.md
++++ b/skills/method-selector/SKILL.md
+@@ -61,8 +61,8 @@ AGENTS.md is missing, point to `engagement-setup` and stop.
+ ## Step 1: Classify the engagement
+ 
+ Assign the engagement to one or more types (see `references/method-map.md`):
+-proposal, EA and architecture, audit and assessment, project setup, research, or
+-internal project. Many engagements are mixed, for example a proposal with an
++proposal, EA and architecture, concept (UI concept, Fachkonzept), audit and
++assessment, project setup, research, or internal project. Many engagements are mixed, for example a proposal with an
+ architecture part. Multiple assignments are allowed.
+ 
+ ## Step 2: Propose the chain
+diff --git a/skills/method-selector/references/method-map.md b/skills/method-selector/references/method-map.md
+index c3a5548..818233c 100644
+--- a/skills/method-selector/references/method-map.md
++++ b/skills/method-selector/references/method-map.md
+@@ -15,6 +15,7 @@ What each skill owns, in one sentence. The details are in the respective SKILL.m
+ | inacta-proposal-writing | Proposal narrative, structure, action titles, business case | Proposal |
+ | inacta-proposal-deck | Proposal in the Inacta house style (PPTX) | Proposal, production |
+ | inacta-ea-method | SCN and CBM, target architecture, gap, roadmap, governance | EA |
++| interaction-model | Interaction model of a user interface: concepts, object map, object-action matrix, posture, layers, signifiers, motion. Build and Audit | Proposal (internal), concept mandate (deliverable), delivery |
+ | solution-architecture-lite | Building-level solution design for a system the mandate actually designs: scope sheet, one blueprint, capacity sheet, trade-off memo. Internal only | Proposal or EA, before the client-facing prose |
+ | ict-audit | Assessment of an existing solution, question catalogue, audit report | Audit |
+ | ipm-project-setup | Project setup per IPM, charter, definition, risk log | Project |
+@@ -38,6 +39,7 @@ Name them as a light addition when they fit. Not a mandatory step.
+ |---|---|---|
+ | Wardley Mapping | Build versus buy, positioning, legacy versus modern, strategy | 99 Methods/Mapping (Primer plus Cheat Sheet) |
+ | Design Thinking | A real discovery or co-creation phase with the client in the room | 99 Methods/Design Thinking |
++| UX reading list (Jackson, Rosenberg, Prater, Cooper, Norman, Shneiderman) | Background for interaction-model, when a layer is disputed | interaction-model/references/sources.md |
+ | Consultative / Challenger Sales | Business development, first contact, opportunity work | 99 Methods/Consultative Selling |
+ 
+ ## Standard chains per engagement type
+@@ -51,6 +53,7 @@ client-facing deliverable.
+ engagement-setup -> method-selector
+   -> shipley-proposal (only for an RFP: strategy, compliance, storyboard)
+   -> solution-architecture-lite (only if the offer designs a software system)
++  -> interaction-model (only if the offer designs a user interface, L1 to L4, internal)
+   -> inacta-proposal-writing (narrative, structure, action titles)
+   -> inacta-proposal-deck (deck) or docx (Word) + human-writing
+   -> premortem-review (optional, on the first complete draft)
+@@ -90,6 +93,24 @@ engagement-setup -> method-selector
+   -> engagement-package-export
+ ```
+ 
++### Concept / UI concept (Fachkonzept, Bedienkonzept)
++
++```
++engagement-setup -> method-selector
++  -> persona-analysis, requirements-engineering (as far as the mandate needs them)
++  -> solution-architecture-lite (only if the concept also cuts the system)
++  -> interaction-model (Build, L1 to L6, the concept is the deliverable)
++  -> docx or inacta-proposal-deck + drawio-diagrams-enhanced + clear-by-design
++     + human-writing
++  -> premortem-review (optional, on the first complete draft)
++  -> tech-executive-review -> red-team-review
++  -> publication-boundary-review (release gate)
++  -> engagement-package-export
++```
++
++For a concept without any user interface (pure process or data concept) leave out
++interaction-model.
++
+ ### Project setup / delivery
+ 
+ ```
+@@ -132,6 +153,13 @@ engagement-setup (leave out the admin part) -> method-selector
+   run for EA-only, process-only, package implementation and pure discovery mandates, and it
+   stops at the offer. Once the mandate is won and the system is built, the arc42 skills take
+   over.
++- **interaction-model or solution-architecture-lite?** solution-architecture-lite cuts the
++  system into building blocks. interaction-model designs what the user sees and does. Both
++  can run on the same mandate, the system cut first. Pull interaction-model only when a user
++  interface is part of what we offer or design.
++- **interaction-model or clear-by-design?** clear-by-design makes documents and decks land.
++  interaction-model designs software interfaces. A UI concept document uses both: the model
++  from interaction-model, the document design from clear-by-design.
+ - **Shipley or proposal writing?** Both for an RFP, one after the other. Shipley
+   does strategy and compliance, proposal writing does text and structure. For
+   a very small proactive proposal, proposal writing alone is often enough.
+diff --git a/skills/solution-architecture-lite/SKILL.md b/skills/solution-architecture-lite/SKILL.md
+index f98905c..74a8920 100644
+--- a/skills/solution-architecture-lite/SKILL.md
++++ b/skills/solution-architecture-lite/SKILL.md
+@@ -62,6 +62,7 @@ Two entry points, one skill.
+ engagement-setup -> method-selector
+   -> shipley-proposal        (win strategy, compliance matrix, storyboard)
+   -> solution-architecture-lite   (this skill: scope, blueprint, capacity, trade-offs)
++  -> interaction-model       (only if the offer designs a user interface)
+   -> inacta-proposal-writing (the client-facing solution approach section)
+   -> docx or inacta-proposal-deck, plus drawio-diagrams-enhanced and human-writing
+   -> the review chain in LOOP.md section 3
+@@ -95,6 +96,8 @@ Skips on purpose:
+ - Capability model, gap analysis, transition roadmap, architecture governance:
+   `inacta-ea-method`.
+ - Assessment of an existing solution: `ict-audit`.
++- What the user sees and does, the object model and the screens: `interaction-model`. It
++  runs after this skill and takes the building blocks as a given.
+ - Delivery-phase architecture documentation, arc42 sections, design by contract, test
+   derivation: the V-Model skills. This skill stops at the offer.
+ - Diagram production: `drawio-diagrams-enhanced`, PNG before embedding.
+diff --git a/skills/interaction-model/INSTALL.md b/skills/interaction-model/INSTALL.md
+new file mode 100644
+index 0000000..ac094b4
+--- /dev/null
++++ b/skills/interaction-model/INSTALL.md
+@@ -0,0 +1,25 @@
++# Install: interaction-model
++
++A method skill for the interaction model of a software user interface: seven layers from
++concepts to motion, with a Build and an Audit mode.
++
++## Contents
++
++```
++interaction-model/
++  SKILL.md                    the flow and the principles
++  references/
++    worksheets.md             one template per layer
++    sources.md                which work owns which layer
++```
++
++## Installation
++
++A standard Agent Skills package, no scripts, no runtime specific manifest.
++
++- **Claude (Cowork or Claude Code)**: import `interaction-model.skill` in the skill
++  settings, or put the folder into the skills source directory.
++- **Any other runtime**: copy the folder into the skills directory of the runtime.
++
++Install the updated `method-selector`, `solution-architecture-lite`,
++`inacta-proposal-writing` and `clear-by-design` together with it, so the chains point to it.
+diff --git a/skills/interaction-model/SKILL.md b/skills/interaction-model/SKILL.md
+new file mode 100644
+index 0000000..47dab8e
+--- /dev/null
++++ b/skills/interaction-model/SKILL.md
+@@ -0,0 +1,205 @@
++---
++name: interaction-model
++description: >
++  Designs and audits the interaction model of a software user interface as seven layers:
++  concepts, object model, object-action matrix, posture, spatial layers, interaction,
++  motion. Build mode produces the layer artifacts in order, Audit mode rates an existing UI
++  or screenshots against them. Works in a proposal (internal artifacts), a concept mandate
++  (the UI concept is the deliverable) and a code project. Keeps Jackson, ORCA, Rosenberg,
++  Cooper, Norman, Shneiderman and Apple's fluid motion, skips OOUX workshops and visual
++  design. Triggers: "interaction model", "conceptual model", "object-action matrix",
++  "OOUX", "UI concept", "screen design", "Interaktionsmodell", "Bedienkonzept",
++  "UI-Konzept", "Objektmodell", "Oberfläche entwerfen", "UI prüfen". Engagement-generic,
++  scaffolds no folders, runs no reviews. Boundary: system cut solution-architecture-lite,
++  prose inacta-proposal-writing, documents clear-by-design, brand inacta-brand.
++---
++
++# Interaction model
++
++## Purpose
++
++Own the step between user needs and screens. The skill makes sure that an interface is
++built from a clear conceptual model, and that the presentation only shows what the model
++defines. It does not own requirements (`requirements-engineering`), personas
++(`persona-analysis`), the system cut (`solution-architecture-lite`), brand and visual
++style (`inacta-brand`, `inacta-proposal-deck`), client prose (`inacta-proposal-writing`),
++documents and decks (`clear-by-design`), architecture documentation
++(`arc42-documentation`) or tests (`test-strategy`).
++
++Stance: an interaction designer who refuses to draw a screen before the objects are named.
++
++## Where this sits
++
++Three contexts. Find out which one applies in Step 0.
++
++**Proposal that designs a UI.** The artifacts stay internal in `reference/`.
++
++```
++engagement-setup -> method-selector -> shipley-proposal (RFP only)
++  -> solution-architecture-lite (if the offer designs a system)
++  -> interaction-model (this skill, Build, usually L1 to L4)
++  -> inacta-proposal-writing (writes the UI part of the solution section from it)
++  -> review chain
++```
++
++**Concept mandate (UI concept, Bedienkonzept, Fachkonzept with an interface).** The
++concept is the deliverable.
++
++```
++engagement-setup -> method-selector
++  -> persona-analysis and requirements-engineering, as far as the mandate needs them
++  -> interaction-model (this skill, Build, L1 to L6, L7 if the product is an app)
++  -> docx or inacta-proposal-deck, plus drawio-diagrams-enhanced, clear-by-design,
++     human-writing
++  -> review chain
++```
++
++**Code project (V-Model).** After Phase 1, before Phase 2. Artifacts in `docs/ui/`. The
++conceptual model goes into arc42 §8, the operational principles into `test-strategy`.
++Audit mode runs again on the built UI.
++
++If the engagement folder does not exist yet, point the user to `engagement-setup`. Do not
++scaffold here.
++
++## The layer rule
++
++Work top down. A layer may only use what the layers above define. Never start L4 to L7
++while L1 to L3 have open questions. Each layer has one source that owns it, see
++`references/sources.md`. Templates are in `references/worksheets.md`.
++
++| Layer | Question | Artifact |
++|---|---|---|
++| L1 Concepts | Which units of function exist, and why? | Concept inventory |
++| L2 Object model | Which objects do users handle? | ORCA object map |
++| L3 Grammar | Which action works on which object? | Object-action matrix |
++| L4 Posture | How much screen and attention does it get? | Posture decision |
++| L5 Space | Where does each thing live in depth? | Layer model (z-map) |
++| L6 Interaction | How does the user find and do each action? | Signifier and reversibility table |
++| L7 Motion | How does it respond while things change? | Motion rules |
++
++Depth per context: a proposal usually needs L1 to L4, enough to show that we understood the
++users' objects. A concept mandate needs L1 to L6. L7 only for apps with real transitions.
++
++## What this skill keeps and skips
++
++Keeps: concepts with one purpose and an operational principle (Jackson); objects,
++relationships, calls to action, attributes (Prater, Johnson and Henderson); the
++object-action matrix with sparse cells as findings (Rosenberg); sovereign, transient and
++daemonic posture (Cooper); content layer and functional layer (Material 1, Liquid Glass);
++signifiers, direct manipulation, reversible actions (Norman, Shneiderman); responsive,
++interruptible, redirectable motion (Apple).
++
++Skips on purpose: the full OOUX workshop format (too heavy, the worksheet covers the
++result); Jackson's synchronization formalism (DbC covers behavior); Material elevation
++values and shadows (brand); Liquid Glass materials (platform specific); component libraries
++and widget choice (implementation); wireframes and mockups (production, after this skill).
++
++## Step 0: Context intake (always first)
++
++Read with a sub-agent if the runtime offers one, otherwise in a separate focused pass:
++
++- Operating brief: `AGENTS.md`, otherwise `AGENT.md`, otherwise `CLAUDE.md`. Read only.
++  It tells the context (proposal, concept, code project), the language and the guardrails.
++- In a code project: `docs/project-context.md` and `.vmodel.yml` if present.
++- Inputs: the RFP or brief in `brief/`, user stories, personas, process descriptions,
++  screenshots of the current system.
++- The client glossary (`client-glossary`). Object and action names come from it.
++- Artifacts of `solution-architecture-lite` in `reference/`, if present. Concepts must not
++  cut across its building blocks without a reason.
++- In Audit mode: the UI itself, as screenshots or a running prototype. Look at it, do not
++  only read the text or the code.
++
++If a source is missing, ask. Never invent users, objects or actions.
++
++## Folder mapping
++
++| Artifact | Engagement folder | Code project |
++|---|---|---|
++| L1 to L7 worksheets | `reference/` (internal) | `docs/ui/` |
++| UI concept for the client (concept mandate only) | `deliverables/` | not applicable |
++| New terms | `client-glossary`, status Working | glossary of the project |
++
++Naming in engagements: `<Client>_<Engagement>_InteractionModel_<YYYY-MM-DD>.md`.
++
++## Build mode
++
++1. **L1 Concepts.** From the user needs, list the concepts. Each has a name, one purpose,
++   its state, its actions and an operational principle. Two purposes in one concept is a
++   split. One purpose in two concepts is a merge.
++2. **L2 Object map.** Per concept, the objects the user sees and handles. Per object:
++   attributes, relationships, calls to action. Names from the glossary. No layout, no
++   widgets.
++3. **L3 Matrix.** Objects as rows, actions as columns. Each cell: `yes`, `no: <reason>` or
++   `open`. A cell without a value is a finding. Prefer generic actions (open, create, edit,
++   share, delete, undo) that behave the same on every object.
++4. **L4 Posture.** One decision per surface: sovereign, transient or daemonic. Derive it
++   from the personas (how long, how often). It sets the chrome budget.
++5. **L5 Layers.** Every element gets one z position. Content at the bottom, the functional
++   layer (controls, navigation) above it, transient surfaces (sheets, dialogs, toasts) on
++   top. Nothing changes layer without a reason.
++6. **L6 Interaction.** Per allowed matrix cell: the signifier, direct manipulation or
++   command, and the undo path.
++7. **L7 Motion.** Only for the transitions that matter. Each follows the input, can be
++   interrupted and can be redirected.
++8. **Handover.** By context:
++   - Proposal: hand the L1 to L4 sheets to `inacta-proposal-writing`. The client reads the
++     users' objects and the operational principles in plain words, never the matrix.
++   - Concept mandate: build the deliverable with `docx` or `inacta-proposal-deck`. The
++     object map and the layer model as diagrams (`drawio-diagrams-enhanced`), the matrix as
++     an annex table, one operational principle per concept in the main text. Then
++     `clear-by-design` and the review chain.
++   - Code project: L1 to L3 into arc42 §8 (`arc42-documentation`), operational principles
++     and undo rules into `test-strategy`, concept actions into `arc42-design-by-contract`.
++
++## Audit mode
++
++Rate an existing UI against L1 to L7, top down. Per layer a score from 1 to 5 and the
++findings with location (screen, element) and one concrete fix. Report the three to five
++most effective fixes first. Typical findings:
++
++- A screen shows something that has no object in L2 (orphan element).
++- The same action has different names or gestures on different objects (grammar break).
++- An action exists on one object and is missing on a similar one without reason.
++- A destructive action has a confirmation but no undo.
++- An action has no visible signifier.
++- Controls scroll away with the content, or content covers controls.
++- An animation blocks input or cannot be stopped.
++
++Audit mode also serves a proposal: rate the client's current system from screenshots and
++use the top findings as the complication in the narrative. Hand that to
++`inacta-proposal-writing`, do not write the prose here. Audit does not rate brand, color or
++copy.
++
++## Operating principles
++
++- No layout before the matrix. If someone asks for a screen first, sketch the matrix first
++  and say why.
++- The user's words name the objects. A new term goes to `client-glossary` as Working.
++- Every gap is a decision. Write the reason or open the question.
++- Undo beats confirm.
++- Controls live in the functional layer above the content.
++- Every action has a visible signifier. Hidden gestures only as a shortcut.
++- Motion starts from the input, can be interrupted and can be redirected.
++- Never invent facts. Anything not in an input is an open question.
++- Internal only stays internal. The matrix and the worksheets never go to the client in a
++  proposal.
++
++## Style rules for the outputs
++
++The deliverable language follows the operating brief. No em-dashes, use a comma instead.
++German uses the umlauts ä, ö, ü, Ä, Ö, Ü, never ae, oe, ue, and ss instead of ß (Swiss
++standard German). English is written for non-native readers, short sentences, no idioms.
++
++## Portability
++
++- Runs on any Agent Skills runtime, Cowork and Claude Code included. No runtime specific
++  tool is needed. Where this skill says ask, use the structured question mechanism of the
++  runtime, otherwise ask in the chat.
++- A persistent project folder is expected. If it is missing, work with the files of the
++  session, keep the same structure and say openly that nothing was persisted.
++
++## Parameterization
++
++Fixed: the layer order, the artifacts, the principles. Per mandate: the context, the depth
++(which layers), the storage location, the platform conventions (web, iOS, Android) and the
++language.
+diff --git a/skills/interaction-model/references/sources.md b/skills/interaction-model/references/sources.md
+new file mode 100644
+index 0000000..8f557ea
+--- /dev/null
++++ b/skills/interaction-model/references/sources.md
+@@ -0,0 +1,17 @@
++# Sources and the layer each one owns
++
++Use a source only for its layer. If two sources seem to disagree, check first whether they
++answer different layers.
++
++| Layer | Source | What we take | What we leave |
++|---|---|---|---|
++| L1 | Daniel Jackson, *The Essence of Software* | Concepts with one purpose, own state and actions, the operational principle | Formal synchronization notation |
++| L2 | Johnson and Henderson, *Conceptual Models* (2nd ed. 2024) | Objects, attributes, operations; the rule that the model excludes layout and widgets | Long-form documentation templates |
++| L2 | Sophia Prater, OOUX / ORCA | Objects, Relationships, Calls to action, Attributes as a worksheet | The full workshop format |
++| L3 | Daniel Rosenberg, *UX Magic* (Semantic Interaction Design) | Grammar as the conceptual model; object-action matrix; sparse grid as cognitive load | Mapping onto a specific pattern library |
++| L4 | Alan Cooper, application posture | Sovereign, transient, daemonic; posture sets the chrome budget | Older desktop specific advice |
++| L5 | Material Design 1, Environment | A 3D space, every object has one z position | Elevation values and shadow specs |
++| L5 | Apple, Liquid Glass (WWDC25) | Controls and navigation as a functional layer above the content | Glass materials, platform visuals |
++| L6 | Ben Shneiderman, direct manipulation | Continuous representation of objects, physical actions instead of syntax, rapid reversible actions | |
++| L6 | Don Norman, *The Design of Everyday Things*, revised edition | Affordance is what is possible, a signifier shows how people discover it | |
++| L7 | Apple, *Designing Fluid Interfaces* (WWDC18) | Motion that is responsive, interruptible and redirectable | Platform gesture specifics |
+diff --git a/skills/interaction-model/references/worksheets.md b/skills/interaction-model/references/worksheets.md
+new file mode 100644
+index 0000000..d3f4600
+--- /dev/null
++++ b/skills/interaction-model/references/worksheets.md
+@@ -0,0 +1,75 @@
++# Worksheets
++
++One template per layer. Fill top down. Example rows use a simple room booking app.
++
++## L1
++
++Concept inventory (Jackson).
++
++| Concept | Purpose (one) | State | Actions | Operational principle |
++|---|---|---|---|---|
++| Reservation | Hold a resource for a person for a time | resource, person, slot | reserve, cancel, extend | After you reserve a room for a slot, nobody else can reserve it for that slot until you cancel |
++
++Checks: one purpose per concept; the operational principle is a short story with "after
++... then ..."; it can be tested.
++
++## L2
++
++ORCA object map (Prater; Johnson and Henderson).
++
++| Object | Attributes | Relationships | Calls to action | Glossary status |
++|---|---|---|---|---|
++| Room | name, size, equipment | has many Reservations | reserve, view schedule | Confirmed |
++
++Checks: every object name is in the glossary; no widget or layout words ("dropdown",
++"left panel").
++
++## L3
++
++Object-action matrix (Rosenberg). Cell values: `yes`, `no: <reason>`, `open`.
++
++| Object \ Action | open | create | edit | delete | share | undo |
++|---|---|---|---|---|---|---|
++| Room | yes | no: admin only | no: admin only | no: admin only | yes | n/a |
++| Reservation | yes | yes | yes | yes | yes | yes |
++
++Checks: no cell without a value; every `no` has a reason; the same action means the same
++thing in every row.
++
++## L4
++
++Posture decision (Cooper).
++
++| Surface | Posture | Evidence (persona, frequency, duration) | Chrome budget |
++|---|---|---|---|
++| Booking app | transient | Staff book a room 2 to 3 times a week, under one minute | One primary action visible, no permanent side bars |
++
++Postures: sovereign (open all day, main tool), transient (short visits, one task),
++daemonic (runs in the background, rare contact).
++
++## L5
++
++Layer model (Material 1 environment; Liquid Glass).
++
++| z | Layer | Elements | Moves with content? |
++|---|---|---|---|
++| 0 | Content | room list, schedule | yes |
++| 1 | Functional | navigation, primary action | no |
++| 2 | Transient | booking sheet, undo toast | no, dismissible |
++
++## L6
++
++Signifier and reversibility table (Norman; Shneiderman).
++
++| Matrix cell | Signifier | Direct or command | Undo path |
++|---|---|---|---|
++| Reservation, delete | trash icon with label on the row | command | undo toast for 10 seconds, then in history |
++| Reservation, edit time | drag handle on the slot | direct manipulation | drag back, or undo |
++
++## L7
++
++Motion rules (Apple, Designing Fluid Interfaces).
++
++| Transition | Starts from | Interruptible | Redirectable |
++|---|---|---|---|
++| Booking sheet opens | tap on room | yes, swipe down at any time | yes, follows the finger |
