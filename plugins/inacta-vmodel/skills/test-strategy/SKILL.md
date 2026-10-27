@@ -45,6 +45,7 @@ Generate structured, traceable test strategies that close the right side of the 
 | `arc42-design-by-contract` | **Primary input.** DbC contracts in Section 5.4 are the source for unit/module test cases. `require` clauses become test inputs, `ensure` clauses become assertions, `invariant` clauses become property checks. |
 | `persona-analysis` | Persona needs (P1-N1 format) from Section 01 feed into acceptance test scenarios. Each Critical/High persona need should have at least one acceptance test. |
 | `arc42-documentation` | Quality scenarios from Section 10 map to system-level test cases. Functional decomposition provides capability groupings for organizing test suites. |
+| `interaction-model` | Each operational principle of a concept ("after you do X, Y holds") becomes one acceptance test (AT-). Each undo path in the signifier and reversibility table becomes one functional test (FT-). |
 | `arc42-risk-audit` | Risk entries (R-xxx) from Section 11 identify areas needing negative/failure test cases. High-severity risks warrant dedicated regression tests. |
 
 **Typical workflow**: Write requirements → Generate DbC specs → **Generate test strategy** → Execute tests (the project's configured test runner).
@@ -91,6 +92,7 @@ Read these sources in order. Each source type yields a different category of tes
 | User stories / persona needs | `docs/arc42/01-introduction-and-goals.md`, §1.4 | Acceptance tests (AT-) |
 | Quality scenarios | `docs/arc42/10-quality-requirements.md` | Cross-cutting quality tests (FT-) |
 | Risk entries | `docs/arc42/11-risks-and-technical-debt.md` | Negative/failure tests (FT-) |
+| Operational principles, undo paths | `docs/ui/` (from `interaction-model`) | Acceptance tests (AT-), reversibility tests (FT-) |
 
 ### Source Inventory Template
 

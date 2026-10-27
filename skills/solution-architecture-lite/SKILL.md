@@ -62,6 +62,7 @@ Two entry points, one skill.
 engagement-setup -> method-selector
   -> shipley-proposal        (win strategy, compliance matrix, storyboard)
   -> solution-architecture-lite   (this skill: scope, blueprint, capacity, trade-offs)
+  -> interaction-model       (only if the offer designs a user interface)
   -> inacta-proposal-writing (the client-facing solution approach section)
   -> docx or inacta-proposal-deck, plus drawio-diagrams-enhanced and human-writing
   -> the review chain in LOOP.md section 3
@@ -95,6 +96,8 @@ Skips on purpose:
 - Capability model, gap analysis, transition roadmap, architecture governance:
   `inacta-ea-method`.
 - Assessment of an existing solution: `ict-audit`.
+- What the user sees and does, the object model and the screens: `interaction-model`. It
+  runs after this skill and takes the building blocks as a given.
 - Delivery-phase architecture documentation, arc42 sections, design by contract, test
   derivation: the V-Model skills. This skill stops at the offer.
 - Diagram production: `drawio-diagrams-enhanced`, PNG before embedding.

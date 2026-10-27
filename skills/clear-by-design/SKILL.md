@@ -11,7 +11,8 @@ description: >-
   deck", "polish this report". Also use when someone has a document reviewed for impact.
   Boundary: rates clarity, cognitive load and information design, not the substance. For
   substance and attack surface red-team-review, for the buyer view tech-executive-review, for
-  overspecificity weakest-claim-check, for the mechanical final check send-prep.
+  overspecificity weakest-claim-check, for the mechanical final check send-prep, for software
+  user interfaces interaction-model.
 ---
 
 # Clear by Design
@@ -38,6 +39,8 @@ it makes the important path the easy path.
 - `red-team-review` and `tech-executive-review` challenge the substance and the buying
   judgement.
 - `send-prep` is the mechanical final check before sending.
+- `interaction-model` designs software interfaces. This skill designs documents and decks,
+  including the document that presents a UI concept.
 
 Sequence: the substance stands (reviews), then `clear-by-design` for impact and reading
 pleasure, then `send-prep` as the last pass. This skill does not argue the facts again and

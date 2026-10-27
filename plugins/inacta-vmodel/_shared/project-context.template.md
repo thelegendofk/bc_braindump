@@ -26,6 +26,11 @@ Current phase: **Inception** (change to Build or Run as the project moves on)
 - No em-dashes in any deliverable, use commas instead.
 - German text uses the umlauts a o u with two dots, and ss instead of the sharp s.
 - English text is optimised for non-native readers: short sentences, no idioms.
+- User interface work: no layout and no widgets before the object-action matrix exists in
+  `docs/ui/` for the objects touched (skill `interaction-model`). UI names come from the
+  glossary. Every empty matrix cell has a reason. Undo beats confirm. Every action has a
+  visible signifier. Controls live in a layer above the content. Motion follows the input
+  and can be interrupted.
 
 ## Phase history
 

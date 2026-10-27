@@ -125,12 +125,16 @@ Implementation ............ Code .....................
 3. Elicit user stories with acceptance criteria (US-XX.X format)
 4. Write functional requirements (FR-XX.X) and non-functional requirements (NFR-XX.X)
 5. Produce a traceability matrix linking stories to requirements
+6. If the change touches the user interface: run `interaction-model` (Build) for the
+   objects it touches. Output: concept inventory, object map and object-action matrix in
+   `docs/ui/`. No layout work before the matrix exists for those objects.
 
 **Exit Criteria / Outputs**:
 - User stories with acceptance criteria documented
 - Functional and non-functional requirements in FR-XX.X / NFR-XX.X format
 - Traceability matrix (stories to requirements)
 - Updated requirements companion document in the docs path
+- For UI changes: the `interaction-model` artifacts in `docs/ui/`, updated
 
 ---
 
@@ -406,7 +410,12 @@ always in play.
 When skipping a phase, document the justification briefly. Examples:
 
 - "Phase 1 skipped: bug fix with clear root cause, no new requirements"
-- "Phase 3 skipped: user interface only change, no behavioural contract modification"
+- "Phase 3 skipped: user interface only change, no behavioural contract modification,
+  interaction-model matrix updated in docs/ui/"
+
+A user interface change is never a reason to skip the interaction model. If Phase 3 is
+skipped for a UI-only change, run `interaction-model` Audit on the changed screens instead,
+and add its operational principles and undo rules to Phase 4.
 - "Phase 7 skipped: standard feature with no security or data integrity implications"
 
 ---
@@ -470,6 +479,7 @@ Minimal flow for urgent fixes:
 | 6. Test Execution | project hooks (`test-command`, `e2e-test-command`) | Test results, end-to-end verification |
 | 7. Risk Audit | `arc42-risk-audit` | Risk entries (R-00x), mitigation plans, Section 11 updates |
 | 8. Deployment Readiness | `deployment-readiness` | Go/no-go report, Definition of Done verification |
+| 1b. Interaction Model (any UI change) | `interaction-model` (skill library) | Concept inventory, object map, object-action matrix, posture, layers, signifiers in `docs/ui/` |
 | Brand (any user interface or document) | `inacta-brand` | Inacta palette, typography, logo for consistent styling |
 
 ---

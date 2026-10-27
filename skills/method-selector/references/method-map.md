@@ -15,6 +15,7 @@ What each skill owns, in one sentence. The details are in the respective SKILL.m
 | inacta-proposal-writing | Proposal narrative, structure, action titles, business case | Proposal |
 | inacta-proposal-deck | Proposal in the Inacta house style (PPTX) | Proposal, production |
 | inacta-ea-method | SCN and CBM, target architecture, gap, roadmap, governance | EA |
+| interaction-model | Interaction model of a user interface: concepts, object map, object-action matrix, posture, layers, signifiers, motion. Build and Audit | Proposal (internal), concept mandate (deliverable), delivery |
 | solution-architecture-lite | Building-level solution design for a system the mandate actually designs: scope sheet, one blueprint, capacity sheet, trade-off memo. Internal only | Proposal or EA, before the client-facing prose |
 | ict-audit | Assessment of an existing solution, question catalogue, audit report | Audit |
 | ipm-project-setup | Project setup per IPM, charter, definition, risk log | Project |
@@ -38,6 +39,7 @@ Name them as a light addition when they fit. Not a mandatory step.
 |---|---|---|
 | Wardley Mapping | Build versus buy, positioning, legacy versus modern, strategy | 99 Methods/Mapping (Primer plus Cheat Sheet) |
 | Design Thinking | A real discovery or co-creation phase with the client in the room | 99 Methods/Design Thinking |
+| UX reading list (Jackson, Rosenberg, Prater, Cooper, Norman, Shneiderman) | Background for interaction-model, when a layer is disputed | interaction-model/references/sources.md |
 | Consultative / Challenger Sales | Business development, first contact, opportunity work | 99 Methods/Consultative Selling |
 
 ## Standard chains per engagement type
@@ -51,6 +53,7 @@ client-facing deliverable.
 engagement-setup -> method-selector
   -> shipley-proposal (only for an RFP: strategy, compliance, storyboard)
   -> solution-architecture-lite (only if the offer designs a software system)
+  -> interaction-model (only if the offer designs a user interface, L1 to L4, internal)
   -> inacta-proposal-writing (narrative, structure, action titles)
   -> inacta-proposal-deck (deck) or docx (Word) + human-writing
   -> premortem-review (optional, on the first complete draft)
@@ -89,6 +92,24 @@ engagement-setup -> method-selector
   -> publication-boundary-review (release gate)
   -> engagement-package-export
 ```
+
+### Concept / UI concept (Fachkonzept, Bedienkonzept)
+
+```
+engagement-setup -> method-selector
+  -> persona-analysis, requirements-engineering (as far as the mandate needs them)
+  -> solution-architecture-lite (only if the concept also cuts the system)
+  -> interaction-model (Build, L1 to L6, the concept is the deliverable)
+  -> docx or inacta-proposal-deck + drawio-diagrams-enhanced + clear-by-design
+     + human-writing
+  -> premortem-review (optional, on the first complete draft)
+  -> tech-executive-review -> red-team-review
+  -> publication-boundary-review (release gate)
+  -> engagement-package-export
+```
+
+For a concept without any user interface (pure process or data concept) leave out
+interaction-model.
 
 ### Project setup / delivery
 
@@ -132,6 +153,13 @@ engagement-setup (leave out the admin part) -> method-selector
   run for EA-only, process-only, package implementation and pure discovery mandates, and it
   stops at the offer. Once the mandate is won and the system is built, the arc42 skills take
   over.
+- **interaction-model or solution-architecture-lite?** solution-architecture-lite cuts the
+  system into building blocks. interaction-model designs what the user sees and does. Both
+  can run on the same mandate, the system cut first. Pull interaction-model only when a user
+  interface is part of what we offer or design.
+- **interaction-model or clear-by-design?** clear-by-design makes documents and decks land.
+  interaction-model designs software interfaces. A UI concept document uses both: the model
+  from interaction-model, the document design from clear-by-design.
 - **Shipley or proposal writing?** Both for an RFP, one after the other. Shipley
   does strategy and compliance, proposal writing does text and structure. For
   a very small proactive proposal, proposal writing alone is often enough.

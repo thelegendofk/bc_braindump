@@ -1,6 +1,6 @@
 {
   "name": "inacta-vmodel",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Phase-aware V-Model engineering method. Eleven skills spanning the Inception, Build, and Run lifecycle: project-context setup, personas, requirements, arc42 architecture, design by contract, test strategy, risk audit, docs viewer, deployment readiness, and an orchestrating workflow. Stack-neutral and runtime-neutral, every skill reads a per-project context file (.vmodel.yml plus docs/project-context.md). This plugin is a thin Claude packaging of the canonical skills in the Inacta skills library.",
   "author": {
     "name": "Christian Di Giorgio"

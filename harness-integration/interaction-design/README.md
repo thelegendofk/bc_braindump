@@ -1,6 +1,6 @@
 # Interaction design in the harness: integration proposal
 
-Status: draft, for decision. Date: 2026-10-27.
+Status: implemented as draft skills in this repo, not yet imported. Date: 2026-10-27.
 
 ## The problem in one paragraph
 
@@ -48,15 +48,16 @@ will rarely apply it, because nothing forces the layer order.
 ### Option B: method skill `interaction-model` (recommended)
 
 A lite method skill, built with `method-onboarding`, in the same shape as
-`solution-architecture-lite`. Draft: [`interaction-model/SKILL.md`](interaction-model/SKILL.md).
+`solution-architecture-lite`. Skill: [`skills/interaction-model/SKILL.md`](../../skills/interaction-model/SKILL.md).
 Two modes:
 
 - **Build**: produces the L1 to L7 artifacts for a new UI, in order.
 - **Audit**: rates an existing UI or prototype against the layers, with one fix per finding.
 
-Home: the `inacta-vmodel` plugin, because the skill serves software delivery and must hand
-over to `arc42-documentation` and `test-strategy`. Plus the method-map row for proposals
-that design a UI.
+Home: the general skill library, not the `inacta-vmodel` plugin. Reason: concept and
+proposal work runs in engagement folders (Cowork), where `.vmodel.yml` and `docs/` do not
+exist. The skill knows three contexts (proposal, concept mandate, code project) and hands
+over to the V-Model skills in the third one.
 
 ### Option C: B plus harness rules (recommended together with B)
 
@@ -137,10 +138,22 @@ Two habits change for us, not only for agents:
 - **Review order.** In UI reviews we discuss the layers top down. A comment on a button
   color waits while the matrix still has unexplained gaps. This keeps reviews short.
 
+## Cowork
+
+Cowork loads the skills and plugins enabled on the claude.ai account. Once the updated
+skills are imported there, they run in Cowork for concepts and proposals:
+
+- `method-selector` proposes `interaction-model` in the proposal chain and in the new
+  "Concept / UI concept" chain.
+- The skill reads the engagement `AGENTS.md`, writes its sheets to `reference/` and, in a
+  concept mandate, the UI concept to `deliverables/`.
+- The harness rules in the V-Model template only reach code projects. In Cowork the same
+  rules travel inside the skill (operating principles), so nothing depends on a CLAUDE.md.
+
 ## Open decisions
 
-1. Option B plus C, or start with A only?
-2. Home of the skill: `inacta-vmodel` plugin (recommended) or the general skill library?
+1. Decided: B plus C.
+2. Decided: general skill library.
 3. Do we keep L7 (motion) in the skill, or leave it as a reference? It matters for apps,
    less for internal tools and dashboards.
 4. Do we build the matrix check script now, or after the first real use?

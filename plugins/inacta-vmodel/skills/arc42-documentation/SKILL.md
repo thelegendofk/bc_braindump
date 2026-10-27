@@ -50,6 +50,7 @@ Arc42 defines exactly **12 sections**. Never create a Section 13 or beyond. If a
 | Performance characteristics | Section 10 (Quality Requirements) | Performance is a quality attribute |
 | Monitoring / observability | Section 7 (Deployment) or Section 8 (Cross-cutting) | Infrastructure concern or cross-cutting pattern |
 | Security architecture | Section 8 (Cross-cutting Concepts) | Security is a cross-cutting concern |
+| User interface concept (interaction model) | Section 8 (Cross-cutting Concepts) | One concept for all screens. Summarize the concept inventory, object map and object-action matrix from `interaction-model` (`docs/ui/`), link the full sheets, do not copy them |
 | Data model / ERD | Section 5 (Building Block View) | Data model is part of the system's structure |
 | Migration strategy | Section 9 (Architecture Decisions) | Migrations are architectural choices |
 | Coding conventions | Section 2 (Architecture Constraints) | Conventions are constraints on development |

@@ -61,8 +61,8 @@ AGENTS.md is missing, point to `engagement-setup` and stop.
 ## Step 1: Classify the engagement
 
 Assign the engagement to one or more types (see `references/method-map.md`):
-proposal, EA and architecture, audit and assessment, project setup, research, or
-internal project. Many engagements are mixed, for example a proposal with an
+proposal, EA and architecture, concept (UI concept, Fachkonzept), audit and
+assessment, project setup, research, or internal project. Many engagements are mixed, for example a proposal with an
 architecture part. Multiple assignments are allowed.
 
 ## Step 2: Propose the chain

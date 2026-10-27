@@ -39,6 +39,7 @@ with the point. The client's world comes first. Numbers beat adjectives.
 engagement-setup   (folder plus AGENTS.md, work type "Proposal / pitch")
   -> shipley-proposal   (win strategy, win themes, compliance matrix, storyboard)
   -> solution-architecture-lite   (only if the offer designs a software system)
+  -> interaction-model   (only if the offer designs a user interface)
   -> inacta-proposal-writing   (this skill: narrative, structure, action titles, business case)
   -> inacta-proposal-deck (house look) or docx (Word), plus human-writing (voice)
   -> tech-executive-review (buyer view), then red-team-review
@@ -88,6 +89,13 @@ Do not flood the main context. Delegate multi-file reading to a sub-agent if the
   trade-offs. Write the solution approach section from them. Do not design here, and do not
   repeat a capacity figure without its assumption. If they are missing and the offer really
   designs a system, run `solution-architecture-lite` first.
+- **Interaction model artifacts** in `reference/` if the offer designs a user interface:
+  the L1 to L4 sheets from `interaction-model`. Write the user side of the solution section
+  from them: the objects the users handle, in the client's words, and one operational
+  principle per concept as a short "after you do X, Y holds" story. Never show the matrix
+  or the worksheets to the client. If an audit of the current system exists, its top
+  findings can carry the complication. If they are missing and the offer designs a UI, run
+  `interaction-model` first.
 - **The RFP and client input** in `brief/` if present. Input, never edit.
 - **Any house structure, boilerplate, or template** the mandate points to. The
   client-facing structure and any standing company facts are read per mandate, this
